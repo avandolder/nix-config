@@ -128,7 +128,10 @@ in {
     fonts.fontconfig.enable = true;
 
     # sway config
-    programs.rofi.enable = true;
+    programs.fuzzel = {
+      enable = true;
+      settings.main.terminal = "kitty";
+    };
     programs.swaylock.enable = true;
     programs.waybar = {
       enable = true;
@@ -181,6 +184,7 @@ in {
         startup = [
           { command = "systemctl --user restart waybar"; always = true; }
         ];
+        menu = "fuzzel";
       };
     };
 
