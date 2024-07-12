@@ -1,11 +1,16 @@
-{ inputs, outputs, config, lib, pkgs, ... }:
 {
-  imports =
-    [
-      ./hardware-configuration.nix
+  inputs,
+  outputs,
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
+  imports = [
+    ./hardware-configuration.nix
 
-      inputs.home-manager.nixosModules.home-manager
-    ];
+    inputs.home-manager.nixosModules.home-manager
+  ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -27,7 +32,7 @@
     registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
     nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
   };
- 
+
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.memtest86.enable = true;
@@ -71,7 +76,7 @@
 
   users.users.adam = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "disk" "libvirtd" "docker" "audio" "networkmanager" "video" "input" "network" "systemd-journal" ];
+    extraGroups = ["wheel" "disk" "libvirtd" "docker" "audio" "networkmanager" "video" "input" "network" "systemd-journal"];
     packages = with pkgs; [
       inputs.firefox.packages.${system}.firefox-nightly-bin
       firefox
@@ -103,7 +108,7 @@
     nerdfonts
   ];
 
-  home-manager.extraSpecialArgs = { inherit inputs outputs; };
+  home-manager.extraSpecialArgs = {inherit inputs outputs;};
   home-manager.users.adam = import ./home-manager/home.nix;
 
   programs.fish.enable = true;
@@ -161,5 +166,4 @@
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "24.05"; # Did you read the comment?
-
 }
