@@ -81,10 +81,24 @@ in {
     extraGroups = [ "wheel" "disk" "libvirtd" "docker" "audio" "networkmanager" "video" "input" "network" "systemd-journal" ];
     packages = with pkgs; [
       latest.firefox-nightly-bin
+
+      # mozwork
       python311
       python311Packages.python-hglib
       git-cinnabar
       mozphab
+
+      # graphics
+      aseprite
+      blender
+      inkscape
+      krita
+
+      # gamedev
+      godot_4
+      love
+      tiled
+      ldtk
     ];
   };
 
@@ -101,6 +115,7 @@ in {
       wf-recorder
       grim
       slurp
+      lunarvim
     ];
 
     # terminal config
@@ -110,7 +125,7 @@ in {
       theme = "Gruvbox Dark Hard";
       settings = {
         scrollback_lines = 10000;
-        background_opacity = "0.8";
+        background_opacity = "0.95";
         background_blur = 16;
       };
     };
@@ -223,8 +238,12 @@ in {
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     wget
+
+    # devtools
     git
     clang_18
+    cmake
+    ninja
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
