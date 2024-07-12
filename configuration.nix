@@ -4,7 +4,7 @@
 
 { config, lib, pkgs, ... }:
 
-let moz_overlay = import (builtins.fetchTarball https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz);
+let moz_overlay = import (builtins.fetchTarball "https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz");
 in {
   imports =
     [
@@ -12,13 +12,15 @@ in {
       <home-manager/nixos>
     ];
     
-  nixpkgs.overlays = [
-    moz_overlay
-  ];
- 
-  # Needed for firefox-nightly-bin
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs = {
+    overlays = [
+      (file: prev: (moz_overlay file prev) // { git-cinnabar = prev.git-cinnabar; })
+    ];
 
+    # Needed for firefox-nightly-bin
+    config.allowUnfree = true;
+  };
+ 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.memtest86.enable = true;
@@ -81,12 +83,14 @@ in {
     extraGroups = [ "wheel" "disk" "libvirtd" "docker" "audio" "networkmanager" "video" "input" "network" "systemd-journal" ];
     packages = with pkgs; [
       latest.firefox-nightly-bin
+      firefox
 
-      # mozwork
+      # work
       python311
       python311Packages.python-hglib
       git-cinnabar
       mozphab
+      zoom-us
 
       # graphics
       aseprite
@@ -123,13 +127,22 @@ in {
       enable = true;
       font.name = "FiraCode Nerd Font Mono";
       theme = "Gruvbox Dark Hard";
+      shellIntegration.mode = "no-cursor";
       settings = {
         scrollback_lines = 10000;
         background_opacity = "0.95";
         background_blur = 16;
+        cursor_shape = "block";
+        cursor_shape_unfocused = "hollow";
+        shell = "fish";
       };
     };
-    programs.fish.enable = true;
+    programs.fish = {
+      enable = true;
+      functions = {
+        gitignore = "curl -sL https://www.gitignore.io/api/$argv";
+      };
+    };
     programs.btop.enable = true;
     programs.bat.enable = true;
     programs.fd.enable = true;
@@ -208,6 +221,9 @@ in {
             title = "Picture-in-Picture";
           }
           {
+            title = "zoom";
+          }
+          {
             class = "Pavucontrol";
           }
         ];
@@ -234,10 +250,15 @@ in {
     home.stateVersion = "24.05";
   };
 
+  programs.fish.enable = true;
+  users.defaultUserShell = pkgs.fish;
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     wget
+
+    home-manager
 
     # devtools
     git
