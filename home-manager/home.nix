@@ -13,6 +13,9 @@
     grim
     slurp
     lunarvim
+
+    # needed for waybar icons
+    font-awesome
   ];
 
   # terminal config
