@@ -107,6 +107,12 @@ in {
     programs.kitty = {
       enable = true;
       font.name = "FiraCode Nerd Font Mono";
+      theme = "Gruvbox Dark Hard";
+      settings = {
+        scrollback_lines = 10000;
+        background_opacity = "0.8";
+        background_blur = 16;
+      };
     };
     programs.fish.enable = true;
     programs.btop.enable = true;
@@ -124,6 +130,10 @@ in {
     };
     programs.nix-index.enable = true;
     programs.starship.enable = true;
+    programs.lsd = {
+      enable = true;
+      enableAliases = true;
+    };
 
     fonts.fontconfig.enable = true;
 
@@ -154,10 +164,12 @@ in {
       wrapperFeatures.gtk = true;
       swaynag.enable = true;
 
+      checkConfig = false; # needed because of https://www.reddit.com/r/NixOS/comments/1c9n1qk/comment/l0n4u6y/
+                           # tl;dr: home trys to find the bg file at build time, can't, and throws an error
       config = {
         modifier = "Mod4";
 
-	bars = [];
+        bars = [];
 
         gaps = {
           inner = 5;
@@ -168,6 +180,7 @@ in {
         terminal = "kitty";
 
         output = {
+          "*" = { bg = "~/Tilting-at-Windmills.png fill"; };
           DP-1 = { adaptive_sync = "on"; };
           DP-3 = { scale = "1.5"; };
         };
@@ -175,6 +188,9 @@ in {
         floating.criteria = [
           {
             title = "Steam - Update News";
+          }
+          {
+            title = "Picture-in-Picture";
           }
           {
             class = "Pavucontrol";
@@ -186,6 +202,18 @@ in {
         ];
         menu = "fuzzel";
       };
+    };
+
+    programs.vscode = {
+      enable = true;
+      package = vscodium;
+      mutableExtensionsDir = false;
+      extensions = [
+        vscode-extensions.asvetliakov.vscode-neovim
+        vscode-extensions.llvm-vs-code-extensions.vscode-clangd
+        vscode-extensions.rust-lang.rust-analyzer
+        vscode-extensions.esbenp.prettier-vscode
+      ];
     };
 
     home.stateVersion = "24.05";
@@ -206,6 +234,8 @@ in {
     enable = true;
     enableSSHSupport = true;
   };
+
+  programs.steam.enable = true;
 
   # List services that you want to enable:
 
