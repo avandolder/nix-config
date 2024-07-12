@@ -1,24 +1,31 @@
-# Edit this configuration file to define what should be installed on
-# your system. Help is available in the configuration.nix(5) man page, on
-# https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
-{ config, lib, pkgs, ... }:
-
-let moz_overlay = import (builtins.fetchTarball "https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz");
-in {
+{ inputs, outputs, config, lib, pkgs, ... }:
+{
   imports =
     [
       ./hardware-configuration.nix
-      <home-manager/nixos>
-    ];
-    
-  nixpkgs = {
-    overlays = [
-      (file: prev: (moz_overlay file prev) // { git-cinnabar = prev.git-cinnabar; })
+
+      inputs.home-manager.nixosModules.home-manager
     ];
 
-    # Needed for firefox-nightly-bin
-    config.allowUnfree = true;
+  nixpkgs.config.allowUnfree = true;
+
+  nix = let
+    flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+  in {
+    settings = {
+      # Enable flakes and new 'nix' command
+      experimental-features = "nix-command flakes";
+      # Opinionated: disable global registry
+      flake-registry = "";
+      # Workaround for https://github.com/NixOS/nix/issues/9574
+      nix-path = config.nix.nixPath;
+    };
+    # Opinionated: disable channels
+    channel.enable = false;
+
+    # Opinionated: make flake registry and nix path match flake inputs
+    registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
+    nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
   };
  
   # Use the systemd-boot EFI boot loader.
@@ -33,24 +40,8 @@ in {
   # Set your time zone.
   time.timeZone = "America/Toronto";
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
   # Select internationalisation properties.
   i18n.defaultLocale = "en_CA.UTF-8";
-  # console = {
-  #   font = "Lat2-Terminus16";
-  #   keyMap = "us";
-  #   useXkbConfig = true; # use xkb.options in tty.
-  # };
-
-  # Enable the X11 windowing system.
-  # services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
-  # services.xserver.displayManager.gdm.enable = true;
-  # services.xserver.desktopManager.gnome.enable = true;
 
   xdg.portal = {
     enable = true;
@@ -82,7 +73,7 @@ in {
     isNormalUser = true;
     extraGroups = [ "wheel" "disk" "libvirtd" "docker" "audio" "networkmanager" "video" "input" "network" "systemd-journal" ];
     packages = with pkgs; [
-      latest.firefox-nightly-bin
+      inputs.firefox.packages.${system}.firefox-nightly-bin
       firefox
 
       # work
@@ -112,8 +103,16 @@ in {
     nerdfonts
   ];
 
-  home-manager.useGlobalPkgs = true;
+  home-manager.extraSpecialArgs = { inherit inputs outputs; };
   home-manager.users.adam = { pkgs, ... }: with pkgs; {
+    nixpkgs = {
+      config = {
+        allowUnfree = true;
+        # Workaround for https://github.com/nix-community/home-manager/issues/2942
+        allowUnfreePredicate = _: true;
+      };
+    };
+
     home.packages = [
       wl-clipboard
       wf-recorder
@@ -280,18 +279,12 @@ in {
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  system.copySystemConfiguration = true;
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "no";
+    };
+  };
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
