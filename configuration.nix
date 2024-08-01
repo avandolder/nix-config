@@ -13,6 +13,7 @@
   ];
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfreePredicate = _: true;
 
   nix = let
     flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
@@ -31,11 +32,18 @@
     # Opinionated: make flake registry and nix path match flake inputs
     registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
     nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
+
+    # Configure nix GC
+    settings.auto-optimise-store = true;
+    gc.dates = "weekly";
+    gc.automatic = true;
+    gc.options = "--delete-older-than 7d";
   };
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.systemd-boot.memtest86.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 5;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
@@ -53,11 +61,12 @@
     wlr.enable = true;
     config.common.default = "*";
   };
+  environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications"];
 
   programs.light.enable = true;
 
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport32Bit = true;
+  hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -82,10 +91,6 @@
       firefox
 
       # work
-      python311
-      python311Packages.python-hglib
-      git-cinnabar
-      mozphab
       zoom-us
 
       # graphics
@@ -99,6 +104,9 @@
       love
       tiled
       ldtk
+
+      # games
+      lutris
     ];
   };
 
@@ -108,24 +116,41 @@
     nerdfonts
   ];
 
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
   home-manager.extraSpecialArgs = {inherit inputs outputs;};
   home-manager.users.adam = import ./home-manager/home.nix;
 
   programs.fish.enable = true;
   users.defaultUserShell = pkgs.fish;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
-    wget
-
     home-manager
 
-    # devtools
     git
+    git-lfs
+    gh
+    mercurial
+    subversion
+    curl
+    wget
+
+    python3
+
+    # c++ stuff
     clang_18
+    clang-tools_18
     cmake
+    meson
+    xmake
+    scons
+    build2
     ninja
+
+    # common libs
+    mesa
+    glfw
+    freeglut
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -138,9 +163,6 @@
 
   programs.steam.enable = true;
 
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
   services.openssh = {
     enable = true;
     settings = {

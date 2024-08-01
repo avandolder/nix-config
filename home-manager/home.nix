@@ -1,17 +1,11 @@
 {pkgs, ...}: {
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      # Workaround for https://github.com/nix-community/home-manager/issues/2942
-      allowUnfreePredicate = _: true;
-    };
-  };
-
   home.packages = with pkgs; [
     wl-clipboard
     wf-recorder
     grim
     slurp
+    wdisplays
+
     lunarvim
 
     # needed for waybar icons
@@ -53,23 +47,30 @@
     vimdiffAlias = true;
   };
   programs.nix-index.enable = true;
-  programs.starship.enable = true;
   programs.lsd = {
     enable = true;
     enableAliases = true;
   };
+  programs.fastfetch.enable = true;
 
   fonts.fontconfig.enable = true;
 
   # sway config
   programs.fuzzel = {
     enable = true;
-    settings.main.terminal = "kitty";
+    settings = {
+      main = {
+        terminal = "kitty";
+        font = "FiraCode Nerd Font Mono";
+        list-executables-in-path = "yes";
+      };
+    };
   };
   programs.swaylock.enable = true;
   programs.waybar = {
     enable = true;
     systemd.enable = true;
+    # config is based off of the Fedora Sway spin
     settings = {mainBar = import ./waybar-config.nix;};
     style = ./waybar-style.css;
   };
@@ -88,8 +89,10 @@
     wrapperFeatures.gtk = true;
     swaynag.enable = true;
 
-    checkConfig = false; # needed because of https://www.reddit.com/r/NixOS/comments/1c9n1qk/comment/l0n4u6y/
+    # needed because of https://www.reddit.com/r/NixOS/comments/1c9n1qk/comment/l0n4u6y/
     # tl;dr: home trys to find the bg file at build time, can't, and throws an error
+    checkConfig = false;
+
     config = {
       modifier = "Mod4";
 
@@ -132,18 +135,6 @@
       ];
       menu = "fuzzel";
     };
-  };
-
-  programs.vscode = {
-    enable = true;
-    package = pkgs.vscodium;
-    mutableExtensionsDir = false;
-    extensions = [
-      pkgs.vscode-extensions.asvetliakov.vscode-neovim
-      pkgs.vscode-extensions.llvm-vs-code-extensions.vscode-clangd
-      pkgs.vscode-extensions.rust-lang.rust-analyzer
-      pkgs.vscode-extensions.esbenp.prettier-vscode
-    ];
   };
 
   home.stateVersion = "24.05";
