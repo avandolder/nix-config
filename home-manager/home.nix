@@ -12,6 +12,33 @@
     font-awesome
   ];
 
+  programs.git = {
+    enable = true;
+    package = pkgs.git;
+
+    lfs.enable = true;
+
+    userName = "Adam van Dolder";
+    userEmail = "adam.vandolder@gmail.com";
+
+    aliases = {
+      ci = "commit";
+      co = "checkout";
+      s = "status";
+    };
+
+    extraConfig = {
+      credential.helper = "${
+        pkgs.git.override { withLibsecret = true; }
+      }/bin/git-credential-launcher";
+    };
+
+    ignores = [
+      "*~"
+      "*.swp"
+    ];
+  };
+
   # terminal config
   programs.kitty = {
     enable = true;
