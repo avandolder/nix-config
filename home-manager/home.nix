@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   home.packages = with pkgs; [
     wl-clipboard
     wf-recorder
@@ -11,6 +15,17 @@
     # needed for waybar icons
     font-awesome
   ];
+
+  home.sessionVariables = {
+    GDK_BACKEND = "wayland,x11";
+    QT_QPA_PLATFORM = "wayland;xcb";
+    SDL_VIDEODRIVER = "wayland";
+    CLUTTER_BACKEND = "wayland";
+    XDG_SESSION_TYPE = "wayland";
+    WLR_NO_HARDWARE_CURSORS = "1";
+    ENABLE_VKBASALT = "1";
+    NIXOS_OZONE_WL = "1";
+  };
 
   programs.git = {
     enable = true;
@@ -29,13 +44,14 @@
 
     extraConfig = {
       credential.helper = "${
-        pkgs.git.override { withLibsecret = true; }
+        pkgs.git.override {withLibsecret = true;}
       }/bin/git-credential-launcher";
     };
 
     ignores = [
       "*~"
       "*.swp"
+      ".mozbuild"
     ];
   };
 
@@ -60,7 +76,18 @@
       gitignore = "curl -sL https://www.gitignore.io/api/$argv";
     };
   };
-  programs.btop.enable = true;
+  programs.bottom = {
+    enable = true;
+    settings = {
+      flags = {
+        regex = true;
+        color = "gruvbox";
+        tree = true;
+        enable_gpu = true;
+        enable_cache_memory = true;
+      };
+    };
+  };
   programs.bat.enable = true;
   programs.fd.enable = true;
   programs.fzf.enable = true;
@@ -122,6 +149,12 @@
 
     config = {
       modifier = "Mod4";
+
+      keybindings = lib.mkOptionDefault {
+        XF86AudioRaiseVolume = "exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+";
+        XF86AudioLowerVolume = "exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-";
+        XF86AudioMute = "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+      };
 
       bars = [];
 

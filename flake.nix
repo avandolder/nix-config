@@ -11,6 +11,9 @@
     firefox.url = "github:nix-community/flake-firefox-nightly";
 
     nix-formatter-pack.url = "github:Gerschtli/nix-formatter-pack";
+
+    fenix.url = "github:nix-community/fenix/monthly";
+    fenix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {

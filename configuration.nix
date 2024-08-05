@@ -15,6 +15,21 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowUnfreePredicate = _: true;
 
+  nixpkgs.overlays = [
+    inputs.fenix.overlays.default
+
+    # (final: prev: {
+    #   clang-tools_18 = prev.clang-tools_18.overrideAttrs (oldAttrs: {
+    #     name = "clang-tools_18-patched";
+    #     patches = (oldAttrs.patches or []) ++ [(final.fetchpatch {
+    #       name = "fix-clangd-BlockEnd-hint.patch";
+    #       url = "https://github.com/llvm/llvm-project/pull/72345.patch";
+    #       sha256 = "sha256-Al59zOQux52QOwa5M+1MC0uTFRtNUtEGg11NU7u3/dY=";
+    #     })];
+    #   });
+    # })
+  ];
+
   nix = let
     flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
   in {
@@ -60,6 +75,10 @@
     enable = true;
     wlr.enable = true;
     config.common.default = "*";
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+      pkgs.xdg-desktop-portal-hyprland
+    ];
   };
   environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications"];
 
@@ -89,6 +108,7 @@
     packages = with pkgs; [
       inputs.firefox.packages.${system}.firefox-nightly-bin
       firefox
+      ungoogled-chromium
 
       # work
       zoom-us
@@ -119,6 +139,7 @@
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.extraSpecialArgs = {inherit inputs outputs;};
+  home-manager.backupFileExtension = "backup";
   home-manager.users.adam = import ./home-manager/home.nix;
 
   programs.fish.enable = true;
@@ -134,8 +155,10 @@
     subversion
     curl
     wget
+    p7zip
 
     python3
+    zig
 
     # c++ stuff
     clang_18
@@ -151,7 +174,15 @@
     mesa
     glfw
     freeglut
+
+    # rust stuff
+    inputs.fenix.packages.x86_64-linux.default.toolchain
+
+    # let's try medium for now
+    texliveMedium
   ];
+
+  environment.sessionVariables = {};
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -161,7 +192,19 @@
     enableSSHSupport = true;
   };
 
-  programs.steam.enable = true;
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
+    #gamescopeSession.enable = true;
+  };
+  programs.gamescope.enable = true;
+  programs.nix-ld.enable = true;
+
+  # need this for hyprland via home-manager
+  programs.hyprland.enable = true;
+  security.pam.services.hyprlock = {};
 
   services.openssh = {
     enable = true;
