@@ -5,9 +5,28 @@
   # "width" = 1280; # Waybar width
   "spacing" = 4; # Gaps between modules (4px)
   # Choose the order of the modules
-  "modules-left" = ["sway/workspaces" "sway/mode" "sway/scratchpad"];
-  "modules-center" = ["sway/window"];
-  "modules-right" = ["mpd" "idle_inhibitor" "pulseaudio" "network" "cpu" "memory" "temperature" "backlight" "keyboard-state" "sway/language" "battery" "battery#bat2" "clock" "tray"];
+  "modules-left" = [
+    "sway/workspaces"
+    "sway/mode"
+    "sway/scratchpad"
+  ];
+  "modules-center" = [ "sway/window" ];
+  "modules-right" = [
+    "mpd"
+    "idle_inhibitor"
+    "pulseaudio"
+    "network"
+    "cpu"
+    "memory"
+    "temperature"
+    "backlight"
+    "keyboard-state"
+    "sway/language"
+    "battery"
+    "battery#bat2"
+    "clock"
+    "tray"
+  ];
   # Modules configuration
   # "sway/workspaces" = {
   #     "disable-scroll" = true;
@@ -39,7 +58,10 @@
   "sway/scratchpad" = {
     "format" = "{icon} {count}";
     "show-empty" = false;
-    "format-icons" = ["" ""];
+    "format-icons" = [
+      ""
+      ""
+    ];
     "tooltip" = true;
     "tooltip-format" = "{app}: {title}";
   };
@@ -98,12 +120,26 @@
     "critical-threshold" = 80;
     # "format-critical" = "{temperatureC}°C {icon}";
     "format" = "{temperatureC}°C {icon}";
-    "format-icons" = ["" "" ""];
+    "format-icons" = [
+      ""
+      ""
+      ""
+    ];
   };
   "backlight" = {
     # "device" = "acpi_video1";
     "format" = "{percent}% {icon}";
-    "format-icons" = ["" "" "" "" "" "" "" "" ""];
+    "format-icons" = [
+      ""
+      ""
+      ""
+      ""
+      ""
+      ""
+      ""
+      ""
+      ""
+    ];
   };
   "battery" = {
     "states" = {
@@ -117,7 +153,13 @@
     "format-alt" = "{time} {icon}";
     # "format-good" = ""; # An empty format will hide the module
     # "format-full" = "";
-    "format-icons" = ["" "" "" "" ""];
+    "format-icons" = [
+      ""
+      ""
+      ""
+      ""
+      ""
+    ];
   };
   "battery#bat2" = {
     "bat" = "BAT2";
@@ -146,7 +188,11 @@
       "phone" = "";
       "portable" = "";
       "car" = "";
-      "default" = ["" "" ""];
+      "default" = [
+        ""
+        ""
+        ""
+      ];
     };
     "on-click" = "pavucontrol";
   };

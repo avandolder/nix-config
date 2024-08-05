@@ -1,8 +1,5 @@
+{ pkgs, lib, ... }:
 {
-  pkgs,
-  lib,
-  ...
-}: {
   home.packages = with pkgs; [
     wl-clipboard
     wf-recorder
@@ -43,9 +40,7 @@
     };
 
     extraConfig = {
-      credential.helper = "${
-        pkgs.git.override {withLibsecret = true;}
-      }/bin/git-credential-launcher";
+      credential.helper = "${pkgs.git.override { withLibsecret = true; }}/bin/git-credential-launcher";
     };
 
     ignores = [
@@ -125,7 +120,9 @@
     enable = true;
     systemd.enable = true;
     # config is based off of the Fedora Sway spin
-    settings = {mainBar = import ./waybar-config.nix;};
+    settings = {
+      mainBar = import ./waybar-config.nix;
+    };
     style = ./waybar-style.css;
   };
   services.swayidle.enable = true;
@@ -156,7 +153,7 @@
         XF86AudioMute = "exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
       };
 
-      bars = [];
+      bars = [ ];
 
       gaps = {
         inner = 5;
@@ -167,24 +164,22 @@
       terminal = "kitty";
 
       output = {
-        "*" = {bg = "~/Tilting-at-Windmills.png fill";};
-        DP-1 = {adaptive_sync = "on";};
-        DP-3 = {scale = "1.5";};
+        "*" = {
+          bg = "~/Tilting-at-Windmills.png fill";
+        };
+        DP-1 = {
+          adaptive_sync = "on";
+        };
+        DP-3 = {
+          scale = "1.5";
+        };
       };
 
       floating.criteria = [
-        {
-          title = "Steam - Update News";
-        }
-        {
-          title = "Picture-in-Picture";
-        }
-        {
-          title = "zoom";
-        }
-        {
-          class = "Pavucontrol";
-        }
+        { title = "Steam - Update News"; }
+        { title = "Picture-in-Picture"; }
+        { title = "zoom"; }
+        { class = "Pavucontrol"; }
       ];
 
       startup = [

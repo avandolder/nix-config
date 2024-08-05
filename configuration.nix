@@ -5,7 +5,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     ./hardware-configuration.nix
 
@@ -30,30 +31,32 @@
     # })
   ];
 
-  nix = let
-    flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
-  in {
-    settings = {
-      # Enable flakes and new 'nix' command
-      experimental-features = "nix-command flakes";
-      # Opinionated: disable global registry
-      flake-registry = "";
-      # Workaround for https://github.com/NixOS/nix/issues/9574
-      nix-path = config.nix.nixPath;
+  nix =
+    let
+      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+    in
+    {
+      settings = {
+        # Enable flakes and new 'nix' command
+        experimental-features = "nix-command flakes";
+        # Opinionated: disable global registry
+        flake-registry = "";
+        # Workaround for https://github.com/NixOS/nix/issues/9574
+        nix-path = config.nix.nixPath;
+      };
+      # Opinionated: disable channels
+      channel.enable = false;
+
+      # Opinionated: make flake registry and nix path match flake inputs
+      registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
+      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
+
+      # Configure nix GC
+      settings.auto-optimise-store = true;
+      gc.dates = "weekly";
+      gc.automatic = true;
+      gc.options = "--delete-older-than 7d";
     };
-    # Opinionated: disable channels
-    channel.enable = false;
-
-    # Opinionated: make flake registry and nix path match flake inputs
-    registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
-    nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
-
-    # Configure nix GC
-    settings.auto-optimise-store = true;
-    gc.dates = "weekly";
-    gc.automatic = true;
-    gc.options = "--delete-older-than 7d";
-  };
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -80,7 +83,10 @@
       pkgs.xdg-desktop-portal-hyprland
     ];
   };
-  environment.pathsToLink = ["/share/xdg-desktop-portal" "/share/applications"];
+  environment.pathsToLink = [
+    "/share/xdg-desktop-portal"
+    "/share/applications"
+  ];
 
   programs.light.enable = true;
 
@@ -104,7 +110,18 @@
 
   users.users.adam = {
     isNormalUser = true;
-    extraGroups = ["wheel" "disk" "libvirtd" "docker" "audio" "networkmanager" "video" "input" "network" "systemd-journal"];
+    extraGroups = [
+      "wheel"
+      "disk"
+      "libvirtd"
+      "docker"
+      "audio"
+      "networkmanager"
+      "video"
+      "input"
+      "network"
+      "systemd-journal"
+    ];
     packages = with pkgs; [
       inputs.firefox.packages.${system}.firefox-nightly-bin
       firefox
@@ -138,7 +155,9 @@
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
-  home-manager.extraSpecialArgs = {inherit inputs outputs;};
+  home-manager.extraSpecialArgs = {
+    inherit inputs outputs;
+  };
   home-manager.backupFileExtension = "backup";
   home-manager.users.adam = import ./home-manager/home.nix;
 
@@ -182,7 +201,7 @@
     texliveMedium
   ];
 
-  environment.sessionVariables = {};
+  environment.sessionVariables = { };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -204,7 +223,7 @@
 
   # need this for hyprland via home-manager
   programs.hyprland.enable = true;
-  security.pam.services.hyprlock = {};
+  security.pam.services.hyprlock = { };
 
   services.openssh = {
     enable = true;

@@ -157,15 +157,13 @@
       "locked": {
         "lastModified": 1715807870,
         "narHash": "sha256-lutvG1LFGSpXsGA7U4TWfdfq6p71WdSlhw3vM4W/Opk=",
-        "owner": "Gerschtli",
-        "repo": "nix-formatter-pack",
+        "path": "/nix/store/mqw1vvf8hv383bz29f6xkawcm9lz5q21-source",
         "rev": "ab5feb867e5d074918852de6134500a82a09dc48",
-        "type": "github"
+        "type": "path"
       },
       "original": {
-        "owner": "Gerschtli",
-        "repo": "nix-formatter-pack",
-        "type": "github"
+        "id": "nix-formatter-pack",
+        "type": "indirect"
       }
     },
     "nixpkgs": {

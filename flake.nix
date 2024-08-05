@@ -10,44 +10,36 @@
 
     firefox.url = "github:nix-community/flake-firefox-nightly";
 
-    nix-formatter-pack.url = "github:Gerschtli/nix-formatter-pack";
-
     fenix.url = "github:nix-community/fenix/monthly";
     fenix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    nix-formatter-pack,
-    ...
-  } @ inputs: let
-    inherit (self) outputs;
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nix-formatter-pack,
+      ...
+    }@inputs:
+    let
+      inherit (self) outputs;
 
-    system = "x86_64-linux";
-    formatterPackArgs = {
-      inherit nixpkgs system;
-      checkFiles = [./.];
+      system = "x86_64-linux";
+    in
+    {
+      formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt-rfc-style;
 
-      config.tools = {
-        alejandra.enable = true;
-        deadnix.enable = true;
-        statix.enable = true;
+      overlays = import ./overlays { inherit inputs; };
+
+      # NixOS configuration entrypoint
+      # Available through 'nixos-rebuild --flake .#your-hostname'
+      nixosConfigurations = {
+        nixos-adam = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit inputs outputs;
+          };
+          modules = [ ./configuration.nix ];
+        };
       };
     };
-  in {
-    checks.${system}.nix-formatter-pack-check = nix-formatter-pack.lib.mkCheck formatterPackArgs;
-    formatter.${system} = nix-formatter-pack.lib.mkFormatter formatterPackArgs;
-
-    overlays = import ./overlays {inherit inputs;};
-
-    # NixOS configuration entrypoint
-    # Available through 'nixos-rebuild --flake .#your-hostname'
-    nixosConfigurations = {
-      nixos-adam = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
-        modules = [./configuration.nix];
-      };
-    };
-  };
 }
