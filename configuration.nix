@@ -195,7 +195,7 @@
     freeglut
 
     # rust stuff
-    inputs.fenix.packages.x86_64-linux.default.toolchain
+    inputs.fenix.packages.x86_64-linux.complete.toolchain
 
     # let's try medium for now
     texliveMedium

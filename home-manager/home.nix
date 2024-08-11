@@ -69,6 +69,7 @@
     enable = true;
     functions = {
       gitignore = "curl -sL https://www.gitignore.io/api/$argv";
+      g = "git $argv";
     };
   };
   programs.bottom = {
