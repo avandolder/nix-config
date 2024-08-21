@@ -1,5 +1,9 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, inputs, ... }:
 {
+  imports = [
+    inputs.nixvim.homeManagerModules.nixvim
+  ];
+
   home.packages = with pkgs; [
     wl-clipboard
     wf-recorder
@@ -22,6 +26,49 @@
     WLR_NO_HARDWARE_CURSORS = "1";
     ENABLE_VKBASALT = "1";
     NIXOS_OZONE_WL = "1";
+  };
+
+  programs.nixvim = {
+    enable = true;
+    defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
+    vimdiffAlias = true;
+
+    colorschemes.gruvbox.enable = true;
+
+    plugins = {
+      gitsigns = {
+        enable = true;
+      };
+      lightline.enable = true;
+    };
+
+    extraPlugins = with pkgs.vimPlugins; [ vim-nix ];
+
+    opts = {
+      number = true;
+      relativenumber = true;
+
+      swapfile = false;
+      modeline = false;
+      undofile = true;
+
+      expandtab = true;
+      shiftwidth = 2;
+      tabstop = 2;
+      softtabstop = 2;
+      smarttab = true;
+      autoindent = true;
+
+      incsearch = true;
+      ignorecase = true;
+      smartcase = true;
+
+      mouse = "a";
+
+      termguicolors = true;
+    };
   };
 
   programs.git = {
@@ -89,13 +136,6 @@
   programs.fzf.enable = true;
   programs.ripgrep.enable = true;
   programs.zoxide.enable = true;
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
-    vimdiffAlias = true;
-  };
   programs.nix-index.enable = true;
   programs.lsd = {
     enable = true;
