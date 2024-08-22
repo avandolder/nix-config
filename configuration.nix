@@ -64,9 +64,31 @@
   boot.loader.systemd-boot.configurationLimit = 5;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot.initrd.systemd.enable = true;
+
+  boot.tmp.useTmpfs = true;
+  systemd.services.nix-daemon = {
+    environment.TMPDIR = "/var/tmp";
+  };
+
+  boot.binfmt.emulatedSystems = [
+    "aarch64-linux"
+    "riscv64-linux"
+  ];
+
+  system.switch = {
+    enable = false;
+    enableNg = true;
+  };
+
+  # https://nixos.org/manual/nixos/stable/index.html#sec-upgrading-automatic
+  system.autoUpgrade.enable = true;
+  system.autoUpgrade.allowReboot = true;
 
   networking.hostName = "nixos-adam"; # Define your hostname.
   networking.networkmanager.enable = true;
+  networking.networkmanager.wifi.backend = "iwd";
+  networking.nftables.enable = true;
 
   # Set your time zone.
   time.timeZone = "America/Toronto";
@@ -99,8 +121,11 @@
   # Enable sound.
   services.pipewire = {
     enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
     pulse.enable = true;
   };
+  security.rtkit.enable = true;
 
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
@@ -231,6 +256,10 @@
       PermitRootLogin = "no";
     };
   };
+
+  services.fstrim.enable = true;
+
+  services.irqbalance.enable = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.

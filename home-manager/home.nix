@@ -1,8 +1,11 @@
-{ pkgs, lib, inputs, ... }:
 {
-  imports = [
-    inputs.nixvim.homeManagerModules.nixvim
-  ];
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
+{
+  imports = [ inputs.nixvim.homeManagerModules.nixvim ];
 
   home.packages = with pkgs; [
     wl-clipboard
