@@ -41,13 +41,55 @@
     colorschemes.gruvbox.enable = true;
 
     plugins = {
-      gitsigns = {
+      comment.enable = true;
+      crates-nvim.enable = true;
+      gitsigns.enable = true;
+      hmts.enable = true;
+      lualine = {
         enable = true;
+        extensions = [ "fzf" ];
       };
-      lightline.enable = true;
+      lsp = {
+        enable = true;
+        servers = {
+          clangd.enable = true;
+          cmake.enable = true;
+          denols.enable = true;
+          fsautocomplete.enable = true;
+          gdscript.enable = true;
+          hls.enable = true;
+          html.enable = true;
+          jsonls.enable = true;
+          kotlin-language-server.enable = true;
+          lua-ls.enable = true;
+          marksman.enable = true;
+          metals.enable = true;
+          nil-ls.enable = true;
+          ocamllsp.enable = true;
+          omnisharp.enable = true;
+          ruby-lsp.enable = true;
+          ruff.enable = true;
+          rust-analyzer.enable = true;
+          sourcekit = {
+            enable = true;
+            # sourcekit is for both Swift and C/C++/ObjC, but I already have
+            # normal clangd for C/C++.
+            autostart = false;
+          };
+          sqls.enable = true;
+          taplo.enable = true;
+          texlab.enable = true;
+          yamlls.enable = true;
+          zls.enable = true;
+        };
+      };
+      lsp-lines.enable = true;
+      nix.enable = true;
+      #qmk.enable = true;
+      telescope.enable = true;
+      treesitter.enable = true;
+      trim.enable = true;
     };
-
-    extraPlugins = with pkgs.vimPlugins; [ vim-nix ];
 
     opts = {
       number = true;

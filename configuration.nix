@@ -203,11 +203,13 @@
 
     python3
     zig
+    deno
 
     # c++ stuff
     clang_18
     clang-tools_18
     cmake
+    cpm-cmake
     meson
     xmake
     scons
