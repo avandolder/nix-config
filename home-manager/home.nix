@@ -69,7 +69,11 @@
           omnisharp.enable = true;
           ruby-lsp.enable = true;
           ruff.enable = true;
-          rust-analyzer.enable = true;
+          rust-analyzer = {
+            enable = true;
+            installCargo = false;
+            installRustc = false;
+          };
           sourcekit = {
             enable = true;
             # sourcekit is for both Swift and C/C++/ObjC, but I already have
@@ -114,6 +118,13 @@
 
       termguicolors = true;
     };
+
+    extraConfigLuaPost = ''
+      vim.diagnostic.config({
+        virtual_lines = { only_current_line = true },
+        virtual_text = false,
+      })
+    '';
   };
 
   programs.git = {
