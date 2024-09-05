@@ -102,7 +102,7 @@
     config.common.default = "*";
     extraPortals = [
       pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal-hyprland
+      # pkgs.xdg-desktop-portal-hyprland
     ];
   };
   environment.pathsToLink = [
@@ -133,6 +133,8 @@
 
   services.libinput.enable = true;
 
+  programs.adb.enable = true;
+
   users.users.adam = {
     isNormalUser = true;
     extraGroups = [
@@ -146,11 +148,13 @@
       "input"
       "network"
       "systemd-journal"
+      "adbusers"
     ];
     packages = with pkgs; [
       inputs.firefox.packages.${system}.firefox-nightly-bin
       firefox
       ungoogled-chromium
+      epiphany
 
       # work
       zoom-us
@@ -200,6 +204,9 @@
     curl
     wget
     p7zip
+    mold
+    rlwrap
+    sqlite
 
     python3
     zig
@@ -226,6 +233,8 @@
 
     # let's try medium for now
     texliveMedium
+
+    usbutils
   ];
 
   environment.sessionVariables = { };
@@ -249,8 +258,8 @@
   programs.nix-ld.enable = true;
 
   # need this for hyprland via home-manager
-  programs.hyprland.enable = true;
-  security.pam.services.hyprlock = { };
+  # programs.hyprland.enable = true;
+  # security.pam.services.hyprlock = { };
 
   services.openssh = {
     enable = true;

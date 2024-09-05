@@ -41,10 +41,31 @@
     colorschemes.gruvbox.enable = true;
 
     plugins = {
+      cmp = {
+        enable = true;
+        autoEnableSources = true;
+        settings = {
+          mapping = {
+            "<C-Space>" = "cmp.mapping.complete()";
+            "<C-d>" = "cmp.mapping.scroll_docs(-4)";
+            "<C-e>" = "cmp.mapping.close()";
+            "<C-f>" = "cmp.mapping.scroll_docs(4)";
+            "<CR>" = "cmp.mapping.confirm({ select = true })";
+            "<S-Tab>" = "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
+            "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
+          };
+          sources = [
+            { name = "nvim_lsp"; }
+            { name = "path"; }
+            { name = "buffer"; }
+          ];
+        };
+      };
       comment.enable = true;
       crates-nvim.enable = true;
       gitsigns.enable = true;
       hmts.enable = true;
+      indent-blankline.enable = true;
       lualine = {
         enable = true;
         extensions = [ "fzf" ];
@@ -90,8 +111,27 @@
       lsp-lines.enable = true;
       nix.enable = true;
       #qmk.enable = true;
+      rainbow-delimiters.enable = true;
       telescope.enable = true;
-      treesitter.enable = true;
+      todo-comments = {
+        enable = true;
+        ripgrepPackage = null;
+      };
+      treesitter = {
+        enable = true;
+        nixvimInjections = true;
+        settings = {
+          highlight.enable = true;
+          indent.enable = true;
+        };
+      };
+      treesitter-context = {
+        enable = true;
+        settings = {
+          line_numbers = true;
+          max_lines = 2;
+        };
+      };
       trim.enable = true;
     };
 
@@ -119,7 +159,7 @@
       termguicolors = true;
     };
 
-    extraConfigLuaPost = ''
+    extraConfigLua = ''
       vim.diagnostic.config({
         virtual_lines = { only_current_line = true },
         virtual_text = false,
