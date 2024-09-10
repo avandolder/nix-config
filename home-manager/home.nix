@@ -292,11 +292,11 @@
 
       bars = [ ];
 
-      gaps = {
+      /* gaps = {
         inner = 5;
         smartBorders = "on";
         smartGaps = true;
-      };
+      }; */
 
       terminal = "kitty";
 
@@ -306,6 +306,7 @@
         };
         DP-1 = {
           adaptive_sync = "on";
+          mode = "2560x1440@144Hz";
         };
         DP-3 = {
           scale = "1.5";
