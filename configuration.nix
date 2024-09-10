@@ -215,6 +215,7 @@
     # c++ stuff
     clang_18
     clang-tools_18
+    sccache
     cmake
     cpm-cmake
     meson
@@ -237,7 +238,10 @@
     usbutils
   ];
 
-  environment.sessionVariables = { };
+  environment.sessionVariables = {
+    CPM_SOURCE_CACHE = "/home/adam/.cache/CPM";
+    CMAKE_CXX_COMPILER_LAUNCHER = "sccache";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
