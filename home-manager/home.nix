@@ -68,7 +68,7 @@
       indent-blankline.enable = true;
       lualine = {
         enable = true;
-        extensions = [ "fzf" ];
+        settings.extensions = [ "fzf" ];
       };
       lsp = {
         enable = true;
