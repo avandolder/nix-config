@@ -23,7 +23,7 @@
   home.sessionVariables = {
     GDK_BACKEND = "wayland,x11";
     QT_QPA_PLATFORM = "wayland;xcb";
-    SDL_VIDEODRIVER = "wayland";
+    # SDL_VIDEODRIVER = "wayland";
     CLUTTER_BACKEND = "wayland";
     XDG_SESSION_TYPE = "wayland";
     WLR_NO_HARDWARE_CURSORS = "1";
@@ -77,30 +77,30 @@
           cmake.enable = true;
           denols.enable = true;
           fsautocomplete.enable = true;
-          gdscript.enable = true;
+          # gdscript.enable = true;
           hls.enable = true;
           html.enable = true;
           jsonls.enable = true;
-          kotlin-language-server.enable = true;
-          lua-ls.enable = true;
+          kotlin_language_server.enable = true;
+          lua_ls.enable = true;
           marksman.enable = true;
           metals.enable = true;
-          nil-ls.enable = true;
-          ocamllsp.enable = true;
+          nil_ls.enable = true;
+          # ocamllsp.enable = true;
           omnisharp.enable = true;
-          ruby-lsp.enable = true;
+          ruby_lsp.enable = true;
           ruff.enable = true;
-          rust-analyzer = {
+          rust_analyzer = {
             enable = true;
             installCargo = false;
             installRustc = false;
           };
-          sourcekit = {
-            enable = true;
-            # sourcekit is for both Swift and C/C++/ObjC, but I already have
-            # normal clangd for C/C++.
-            autostart = false;
-          };
+          # sourcekit = {
+          #   enable = true;
+          #   # sourcekit is for both Swift and C/C++/ObjC, but I already have
+          #   # normal clangd for C/C++.
+          #   autostart = false;
+          # };
           sqls.enable = true;
           taplo.enable = true;
           texlab.enable = true;
@@ -133,6 +133,7 @@
         };
       };
       trim.enable = true;
+      web-devicons.enable = true;
     };
 
     opts = {

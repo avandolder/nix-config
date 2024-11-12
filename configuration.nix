@@ -112,20 +112,18 @@
 
   programs.light.enable = true;
 
-  hardware.graphics.enable = true;
-  hardware.graphics.enable32Bit = true;
-
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
   # Enable sound.
+  security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    jack.enable = true;
   };
-  security.rtkit.enable = true;
 
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
@@ -161,7 +159,7 @@
 
       # graphics
       aseprite
-      blender
+      # blender
       inkscape
       krita
 
@@ -207,6 +205,12 @@
     mold
     rlwrap
     sqlite
+    btop
+    lact
+    ranger
+    pavucontrol
+    mangohud
+    qemu
 
     python3
     zig
@@ -275,6 +279,13 @@
   services.fstrim.enable = true;
 
   services.irqbalance.enable = true;
+
+  systemd.packages = with pkgs; [ lact ];
+
+  # amdgpu config
+  hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
+  systemd.services.lactd.wantedBy = ["multi-user.target"];
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
